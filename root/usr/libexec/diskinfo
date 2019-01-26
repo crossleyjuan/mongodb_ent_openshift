@@ -1,0 +1,10 @@
+import os
+import sys
+
+path = sys.argv[0]
+
+st = os.statvfs(path)
+free = st.f_bavail * st.f_frsize
+total = st.f_blocks * st.f_frsize
+print("DISK_FREE=%d" % (free / (1024.0 ** 2)))
+print("DISK_TOTAL=%d" % (total / (1024.0 ** 2)))

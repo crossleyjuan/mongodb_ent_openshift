@@ -1,0 +1,45 @@
+##
+## For list of options visit:
+## https://docs.mongodb.org/manual/reference/configuration-options/
+##
+
+# systemLog Options - How to do logging
+systemLog:
+  # Runs the mongod in a quiet mode that attempts to limit the amount of output
+  quiet: ${MONGODB_QUIET}
+
+
+# net Options - Network interfaces settings
+net:
+  # Specify port number (27017 by default)
+  port: ${CONTAINER_PORT}
+  # Specify on which interfaces start listening
+  bindIp: "0.0.0.0"
+
+
+# storage Options - How and Where to store data
+storage:
+  # Directory for datafiles (defaults to /data/db/)
+  dbPath: ${MONGODB_DATADIR}
+  engine: wiredTiger
+  journal:
+    enabled: true
+  wiredTiger:
+    engineConfig:
+       cacheSizeGB: ${CACHE_SIZE}
+
+# in Docker the output goes to the stdout
+systemLog:
+   destination: file
+   path: "${MONGODB_LOGPATH}/mongod.log"
+   logAppend: true
+
+# security:
+#    authorization: enabled
+
+#replication:
+#   replSetName: ${MONGODB_REPLICA_NAME}
+#   oplogSizeMB: ${OPLOG_SIZE}
+# 
+# auditLog:
+#    destination: syslog
