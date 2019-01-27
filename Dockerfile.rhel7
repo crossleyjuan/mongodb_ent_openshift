@@ -25,10 +25,15 @@ LABEL summary="$SUMMARY" \
 
 COPY root /
 
-COPY mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm
-COPY mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm
-COPY mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm
-COPY mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm
+# COPY mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm
+# COPY mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm
+# COPY mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm
+# COPY mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm
+
+ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/3.6/x86_64/RPMS/mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm
+ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/3.6/x86_64/RPMS/mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm
+ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/3.6/x86_64/RPMS/mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm 
+ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/3.6/x86_64/RPMS/mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm 
 
 RUN subscription-manager repos --enable=rhel-7-server-rpms
 
@@ -41,6 +46,8 @@ RUN mkdir -p /mongodb_data && \
     chmod -R g+rwX /mongodb_data && \
     chgrp -R 0 /mongodb_log && \
     chmod -R g+rwX /mongodb_log && \
+    chmod 755 /etc/init.d/disable-transparent-hugepages && \
+    chkconfig --add disable-transparent-hugepages && \
     prepare-yum-repositories rhel-7-server-rpms && \
     yum update -y && \
     yum install -y openssl net-snmp cyrus-sasl cyrus-sasl-plain cyrus-sasl-gssapi snmp gettext && \

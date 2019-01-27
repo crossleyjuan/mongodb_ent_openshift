@@ -12,7 +12,7 @@ function setup_wiredtiger_cache() {
   else
     declare $($PYTHON /usr/libexec/available_memory)
 
-	export CACHE_SIZE=$($PYTHON -c "min=1; limit=int(($MEMORY_AVAILABLE * 0.6 - 1)); print( min if limit < min else limit)")
+	export CACHE_SIZE=$($PYTHON -c "min=0.25; limit=int((($MEMORY_AVAILABLE * 0.5) - 1)); print( min if limit < min else limit)")
   fi
 
   info "wiredTiger cache_size set to ${CACHE_SIZE}"
