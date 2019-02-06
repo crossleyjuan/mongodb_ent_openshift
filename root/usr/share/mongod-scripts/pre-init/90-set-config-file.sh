@@ -7,4 +7,4 @@ cp ${CONTAINER_SCRIPTS_PATH}/mongod.conf.template $MONGODB_CONFIG_PATH
 # Substitute environment variables in configuration file
 TEMP=`mktemp`; cp ${MONGODB_CONFIG_PATH} $TEMP; envsubst > ${MONGODB_CONFIG_PATH} < $TEMP
 
-mongo_common_args+="-f ${MONGODB_CONFIG_PATH}"
+mongo_common_args+=" -f ${MONGODB_CONFIG_PATH}"
