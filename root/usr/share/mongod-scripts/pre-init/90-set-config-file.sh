@@ -4,7 +4,13 @@
 # the config file path
 cp ${CONTAINER_SCRIPTS_PATH}/mongod.conf.template $MONGODB_CONFIG_PATH
 
+# Temporary escape $$ with tags
+sed 's/\$\$\([a-zA-Z_][a-zA-Z]*\)/___\1___/g' -i ${MONGODB_CONFIG_PATH}
+
 # Substitute environment variables in configuration file
 TEMP=`mktemp`; cp ${MONGODB_CONFIG_PATH} $TEMP; envsubst > ${MONGODB_CONFIG_PATH} < $TEMP
+
+# Gets back the temporal dollar substitution
+sed 's/___\(.*\)___/\$\1/g' -i ${MONGODB_CONFIG_PATH}
 
 mongo_common_args+=" -f ${MONGODB_CONFIG_PATH}"

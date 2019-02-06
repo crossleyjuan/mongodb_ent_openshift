@@ -41,5 +41,9 @@ systemLog:
 #   replSetName: ${MONGODB_REPLICA_NAME}
 #   oplogSizeMB: ${OPLOG_SIZE}
 # 
-# auditLog:
-#    destination: syslog
+
+#auditLog:
+#    destination: file
+#    format: JSON
+#    path: ${MONGODB_LOGPATH}/audit.json
+#    filter: "{ atype: { $$in: [ 'authenticate', 'createDatabase', 'dropCollection', 'createUser', 'dropUser', 'dropAllUsersFromDatabase', 'updateUser' ] }}"
