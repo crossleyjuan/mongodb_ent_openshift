@@ -46,8 +46,8 @@ RUN mkdir -p /mongodb_data && \
     chmod -R g+rwX /mongodb_log && \
     groupadd -g 1001 appuser && \
 	useradd -r -u 1001 -g appuser appuser && \
-    chgrp -R 0 /home/appuser && \
     mkdir -p /home/appuser && \
+    chgrp -R 0 /home/appuser && \
     chmod -R g+rwX /home/appuser && \
     chmod 755 /etc/init.d/disable-transparent-hugepages && \
     chkconfig --add disable-transparent-hugepages && \
