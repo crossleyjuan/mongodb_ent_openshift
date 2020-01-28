@@ -20,7 +20,16 @@ export readonly MEMBER_ID="${HOSTNAME##*-}"
 # - MONGODB_REPLICA_NAME
 # - MONGODB_ADMIN_PASSWORD
 function initiate() {
-  mongo_cmd $mongo_cmd_opts --quiet <<<"quit(rs.initiate().ok ? 0 : 1)"
+  local host="$1"
+  #local init_script="quit(rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}' } ] }).ok ? 0 : 1)"
+  local init_script="rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}:27017' } ] })"
+  echo "${init_script}" >> /tmp/initiate.js
+
+  cat /tmp/initiate.js
+
+  local result=$(mongo_cmd $mongo_cmd_opts < /tmp/initiate.js)
+
+  info "initiate result ${result}"
 
   info "Waiting for PRIMARY status ..."
   mongo_cmd $mongo_cmd_opts --quiet <<<"while (!rs.isMaster().ismaster) { sleep(100); }"
@@ -38,9 +47,10 @@ function initiate() {
 # - MONGODB_ADMIN_PASSWORD
 function add_member() {
   local host="$1"
-  info "Adding ${host} to replica set ..."
+  local replicahost="$(replset_addr admin)"
+  info "Adding ${host} to replica set ... ${replicahost}"
 
-  if ! mongo_cmd "$(replset_addr admin)" $mongo_cmd_opts --quiet <<<"while (!rs.add('${host}').ok) { sleep(100); }"; then
+  if ! mongo_cmd "$(replset_addr admin)" --quiet <<<"while (!rs.add('${host}:27017').ok) { sleep(100); }"; then
     info "ERROR: couldn't add host to replica set!"
     return 1
   fi
