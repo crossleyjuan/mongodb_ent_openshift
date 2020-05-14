@@ -75,7 +75,7 @@ function replset_addr() {
     info "CAUSE: DNS lookup for '${MONGODB_SERVICE_NAME:-mongodb}' returned no results."
     return 1
   fi
-  echo "mongodb://${current_endpoints//[[:space:]]/,}/${db}?replicaSet=${MONGODB_REPLICA_NAME}"
+  echo "mongodb://admin:${MONGODB_ADMIN_PASSWORD}@mongod-0.${MONGODB_SERVICE_NAME}/${db}"
 }
 
 # usage prints info about required enviromental variables

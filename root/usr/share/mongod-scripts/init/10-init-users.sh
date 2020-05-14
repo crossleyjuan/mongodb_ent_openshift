@@ -1,3 +1,11 @@
+# StatefulSet pods are named with a predictable name, following the pattern:
+#   $(statefulset name)-$(zero-based index)
+# MEMBER_ID is computed by removing the prefix matching "*-", i.e.:
+#  "mongodb-0" -> "0"
+#  "mongodb-1" -> "1"
+#  "mongodb-2" -> "2"
+export readonly MEMBER_ID="${HOSTNAME##*-}"
+
 # mongo_create_admin creates the MongoDB admin user with password: MONGODB_ADMIN_PASSWORD
 # $1 - login parameters for mongo (optional)
 # $2 - host where to connect (localhost by default)
@@ -108,6 +116,7 @@ else
   fi
 fi
 
+info "Ready to shutdown"
 # Restart the MongoDB daemon to bind on all interfaces
 mongod $mongo_common_args --shutdown
 wait_for_mongo_down

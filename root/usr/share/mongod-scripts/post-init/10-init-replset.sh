@@ -21,8 +21,12 @@ export readonly MEMBER_ID="${HOSTNAME##*-}"
 # - MONGODB_ADMIN_PASSWORD
 function initiate() {
   local host="$1"
-  #mongo_cmd ${mongo_cmd_opts} <<<"quit(rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}' }]}).ok ? 0: 1)"
-  info "mongo_cmd \"$(replset_addr admin)" <<<"quit(rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}' }]}).ok ? 0: 1)\""
+  if [[ $(mongo_cmd ${mongo_cmd_opts} --quiet <<<'db.isMaster().setName') == "${MONGODB_REPLICA_NAME}" ]]; then
+	  info "Replica set '${MONGODB_REPLICA_NAME}' already exists, skipping initialization"
+	  >/tmp/rpl_initialized
+	  exit 0
+  fi
+
   mongo_cmd "$(replset_addr admin)" <<<"quit(rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}' }]}).ok ? 0: 1)"
 
   info "Waiting for PRIMARY status ..."
@@ -49,25 +53,10 @@ function add_member() {
     return 1
   fi
 
-  info "Waiting for PRIMARY/SECONDARY status ..."
-  mongo_cmd ${mongo_cmd_opts} --quiet <<<"while (!rs.isMaster().ismaster && !rs.isMaster().secondary) { sleep(100); }"
-
   info "Successfully joined replica set"
 }
 
 function setup_replica() {
-	# Must bring up MongoDB on localhost only until it has an admin password set.
-	mongod $mongo_common_args  --bind_ip localhost  &
-
-	info "Waiting for local MongoDB to accept connections  ..."
-	wait_for_mongo_up &>/dev/null
-
-	if [[ $(mongo_cmd ${mongo_cmd_opts} --quiet <<<'db.isMaster().setName') == "${MONGODB_REPLICA_NAME}" ]]; then
-	  info "Replica set '${MONGODB_REPLICA_NAME}' already exists, skipping initialization"
-	  >/tmp/rpl_initialized
-	  exit 0
-	fi
-
 	echo "5: ${MONGODB_CONFIG_PATH}"
 	# Initialize replica set only if we're the first member
 	if [ "${MEMBER_ID}" = '0' ]; then
@@ -75,14 +64,11 @@ function setup_replica() {
 	else
 	  add_member "${MEMBER_HOST}"
 	fi
-
-	# Restart the MongoDB daemon to bind on all interfaces
-	mongod $mongo_common_args --shutdown
-	wait_for_mongo_down
 }
 
-if [ -v MONGODB_INITIATE_REPLICA ] && [ ! -f "/tmp/initialized" ];
+if [ ! -f "/tmp/initialized" ];
 then
    setup_replica
    >/tmp/initialized
 fi
+
