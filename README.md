@@ -37,6 +37,64 @@ export KV=$(openssl rand -base64 32)
 docker run -e MONGODB_ADMIN_PASSWORD=123 -e MONGODB_REPLICA_NAME=testrepl -e MONGODB_KEYFILE_VALUE=${KV} --name=mongodb mongodb
 
 
+Run using K8s
+===============
+
+To run in environment like openshift you will need to perform the following steps:
+
+1. Create a secret named keyfile-secret with the key "internal-auth-mongodb-keyfile" with the keyfile contents that will be shared across the replicaset, here is an example of a bash script to generate this:
+
+```bash
+TMPFILE=$(mktemp)
+/usr/bin/openssl rand -base64 741 > $TMPFILE
+microk8s kubectl create secret generic keyfile-secret --from-file=internal-auth-mongodb-keyfile=$TMPFILE
+rm $TMPFILE
+```
+
+openssl can be installed in Windows, Linux, OSX, but if you prefer there are online services that provide random base64 strings, be sure to give at least 256 length
+
+2. Create a yaml with the definition of the service, and example is provided in the folder examples, be sure to provide values to the following environment variables:
+  
+```
+- name: MONGODB_ADMIN_PASSWORD
+  value: mongodb123
+- name: MONGODB_REPLICA_NAME
+  value: MainRepSet
+- name: MONGODB_KEYFILE_VALUE
+  valueFrom:
+	  secretKeyRef:
+		  name: keyfile-secret
+		  key: internal-auth-mongodb-keyfile
+- name: MONGODB_USER
+  value: mongodb
+- name: MONGODB_PASSWORD
+  value: mongodb123
+- name: MONGODB_DATABASE
+  value: testperformance
+- name: MONGODB_SERVICE_NAME
+  value: mongodb
+```
+
+3. Apply the yaml to create the replica set:
+
+```bash
+# using kubectrl:
+kubectl apply -f mongodb.yaml
+# using oc:
+oc apply -f mongodb.yaml
+```
+
+4. Using the provided yaml 3 containers will be created with the names mongod-0, mongod-1 and mongod-2, you can now initialize the replica set like this:
+
+```bash
+
+kubectl exec -it mongod-0 run_initd
+kubectl exec -it mongod-1 run_initd
+kubectl exec -it mongod-2 run_initd
+```
+
+You need to execute this in order, starting from 0, the node 0 will be always used to initialize the replica and the others will add to it.
+
 Audit log
 =========
 
