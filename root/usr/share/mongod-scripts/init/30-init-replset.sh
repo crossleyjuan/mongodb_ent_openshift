@@ -21,9 +21,13 @@ export readonly MEMBER_ID="${HOSTNAME##*-}"
 # - MONGODB_ADMIN_PASSWORD
 function initiate() {
   local host="$1"
-  #mongo_cmd ${mongo_cmd_opts} <<<"quit(rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}' }]}).ok ? 0: 1)"
-  info "mongo_cmd \"$(replset_addr admin)" <<<"quit(rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}' }]}).ok ? 0: 1)\""
-  mongo_cmd "$(replset_addr admin)" <<<"quit(rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}' }]}).ok ? 0: 1)"
+  if [[ $(mongo_cmd ${mongo_cmd_opts} --quiet <<<'db.isMaster().setName') == "${MONGODB_REPLICA_NAME}" ]]; then
+	  info "Replica set '${MONGODB_REPLICA_NAME}' already exists, skipping initialization"
+	  >/tmp/rpl_initialized
+	  exit 0
+  fi
+
+  mongo_cmd "$(replset_addr admin)" --quiet <<<"quit(rs.initiate({ _id: '${MONGODB_REPLICA_NAME}', members: [ { _id: 0, host: '${host}' }]}).ok ? 0: 1)"
 
   info "Waiting for PRIMARY status ..."
   mongo_cmd $mongo_cmd_opts --quiet <<<"while (!rs.isMaster().ismaster) { sleep(100); }"
@@ -42,22 +46,20 @@ function initiate() {
 function add_member() {
   local host="$1"
   info "Adding ${host} to replica set ..."
-  info "Auth:  $(replset_addr admin)"
+
+  wait_for_mongo_up "$(replset_addr admin)" &>/dev/null
 
   if ! mongo_cmd "$(replset_addr admin)" --quiet <<<"while (!rs.add('${host}').ok) { sleep(100); }"; then
     info "ERROR: couldn't add host to replica set!"
     return 1
   fi
 
-  info "Waiting for PRIMARY/SECONDARY status ..."
-  mongo_cmd ${mongo_cmd_opts} --quiet <<<"while (!rs.isMaster().ismaster && !rs.isMaster().secondary) { sleep(100); }"
-
   info "Successfully joined replica set"
 }
 
 function setup_replica() {
 	# Must bring up MongoDB on localhost only until it has an admin password set.
-	mongod $mongo_common_args  --bind_ip localhost  &
+	mongod $mongo_common_args &
 
 	info "Waiting for local MongoDB to accept connections  ..."
 	wait_for_mongo_up &>/dev/null
@@ -68,7 +70,6 @@ function setup_replica() {
 	  exit 0
 	fi
 
-	echo "5: ${MONGODB_CONFIG_PATH}"
 	# Initialize replica set only if we're the first member
 	if [ "${MEMBER_ID}" = '0' ]; then
 	  initiate "${MEMBER_HOST}"
@@ -86,3 +87,4 @@ then
    setup_replica
    >/tmp/initialized
 fi
+

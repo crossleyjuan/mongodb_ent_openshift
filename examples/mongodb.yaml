@@ -29,6 +29,10 @@ spec:
       labels:
         role: mongodb
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -69,11 +73,13 @@ spec:
               value: testperformance
             - name: MONGODB_SERVICE_NAME
               value: mongodb
-              #- name: MONGODB_INITIATE_REPLICA
-              #value: "1"
+            - name: MONGODB_INITIATE_REPLICA
+              value: "1"
           volumeMounts:
             - name: mongodb-persistent-storage-claim
               mountPath: /data/db
+          securityContext:
+            allowPrivilegeEscalation: false
   volumeClaimTemplates:
   - metadata:
       name: mongodb-persistent-storage-claim

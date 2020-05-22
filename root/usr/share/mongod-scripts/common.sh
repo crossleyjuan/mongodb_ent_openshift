@@ -47,7 +47,7 @@ function _wait_for_mongo() {
   local i
   for i in $(seq $MAX_ATTEMPTS); do
     echo "=> ${2:-} Waiting for MongoDB daemon ${message}"
-    if ([[ ${operation} -eq 1 ]] && mongo_cmd ${2:-localhost} <<<"quit()") || ([[ ${operation} -eq 0 ]] && ! mongo_cmd ${2:-localhost} <<<"quit()"); then
+    if ([[ ${operation} -eq 1 ]] && mongo_cmd ${2:-localhost} --quiet 1>/dev/null <<<"quit()") || ([[ ${operation} -eq 0 ]] && ! mongo_cmd ${2:-localhost} --quiet 1>/dev/null <<<"quit()"); then
       echo "=> MongoDB daemon is ${message}"
       return 0
     fi
@@ -75,7 +75,7 @@ function replset_addr() {
     info "CAUSE: DNS lookup for '${MONGODB_SERVICE_NAME:-mongodb}' returned no results."
     return 1
   fi
-  echo "mongodb://admin:${MONGODB_ADMIN_PASSWORD}@mongod-0.${MONGODB_SERVICE_NAME}/${db}"
+  echo "mongodb://admin:${MONGODB_ADMIN_PASSWORD}@mongod-0.$(domainname -d)/${db}"
 }
 
 # usage prints info about required enviromental variables

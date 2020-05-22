@@ -7,9 +7,9 @@ database program, MongoDB uses JSON-like documents with schemas. This \
 container image contains programs to run mongod server."
 
 ENV CONTAINER_SCRIPTS_PATH=/usr/share/mongod-scripts \
-	MONGODB_DATADIR=/mongodb_data \
-    MONGODB_LOGPATH=/mongodb_log \
-    MONGODB_KEYFILE_PATH=/mongodb_data/keyfile
+	MONGODB_DATADIR=/data/db \
+    MONGODB_LOGPATH=/data/db \
+    MONGODB_KEYFILE_PATH=/data/db/keyfile
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
@@ -41,15 +41,9 @@ COPY mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-she
 
 COPY root /
 
-RUN mkdir -p /mongodb_data && \ 
-    mkdir -p /mongodb_log && \
-    mkdir -p /var/run/mongodb && \
+RUN mkdir -p /var/run/mongodb && \
     chgrp -R 0 /var/run/mongodb && \
     chmod -R g+rwX /var/run/mongodb && \
-    chgrp -R 0 /mongodb_data && \
-    chmod -R g+rwX /mongodb_data && \
-    chgrp -R 0 /mongodb_log && \
-    chmod -R g+rwX /mongodb_log && \
     chmod 755 /etc/init.d/disable-transparent-hugepages && \
     chkconfig --add disable-transparent-hugepages && \
     yum update -y && \
@@ -59,10 +53,10 @@ RUN mkdir -p /mongodb_data && \
     rpm -ivh /opt/mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm && \
     rpm -ivh /opt/mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm && \
     yum clean all && \
-    chmod -R g+x /usr/bin/run_mongod && \
-    chmod -R g+x /usr/bin/run_initd && \
+    chmod -R a+x /usr/bin/run_mongod && \
+    chmod -R a+x /usr/bin/run_initd && \
     chgrp -R 0 /etc/mongod.conf && \
-    chmod -R g+rwX /etc/mongod.conf
+    chmod -R a+rwX /etc/mongod.conf
 
 ENTRYPOINT ["container-entrypoint"]
 CMD ["run_mongod"]

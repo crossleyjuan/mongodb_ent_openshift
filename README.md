@@ -84,17 +84,6 @@ kubectl apply -f mongodb.yaml
 oc apply -f mongodb.yaml
 ```
 
-4. Using the provided yaml 3 containers will be created with the names mongod-0, mongod-1 and mongod-2, you can now initialize the replica set like this:
-
-```bash
-
-kubectl exec -it mongod-0 run_initd
-kubectl exec -it mongod-1 run_initd
-kubectl exec -it mongod-2 run_initd
-```
-
-You need to execute this in order, starting from 0, the node 0 will be always used to initialize the replica and the others will add to it.
-
 Audit log
 =========
 
