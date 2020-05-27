@@ -67,14 +67,15 @@ function endpoints() {
 
 # replset_addr return the address of the current replSet
 function replset_addr() {
-  local current_endpoints db
+  local db
   db="${1:-}"
-  current_endpoints="$(endpoints)"
-  if [ -z "${current_endpoints}" ]; then
-    info "Cannot get address of replica set: no nodes are listed in service!"
-    info "CAUSE: DNS lookup for '${MONGODB_SERVICE_NAME:-mongodb}' returned no results."
-    return 1
-  fi
+#  local current_endpoints db
+#  current_endpoints="$(endpoints)"
+#  if [ -z "${current_endpoints}" ]; then
+#    info "Cannot get address of replica set: no nodes are listed in service!"
+#    info "CAUSE: DNS lookup for '${MONGODB_SERVICE_NAME:-mongodb}' returned no results."
+#    return 1
+#  fi
   echo "mongodb://admin:${MONGODB_ADMIN_PASSWORD}@mongod-0.$(domainname -d)/${db}"
 }
 
