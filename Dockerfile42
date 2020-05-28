@@ -20,24 +20,15 @@ LABEL summary="$SUMMARY" \
       version="1" \
       maintainer="MongoDB <juan.crossley@mongodb.com>"
 
-# COPY mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm
-# COPY mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm
-# COPY mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm
-# COPY mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm
-# ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/3.6/x86_64/RPMS/mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm
-# ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/3.6/x86_64/RPMS/mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm
-# ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/3.6/x86_64/RPMS/mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-3.6.10-1.el7.x86_64.rpm 
-# ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/3.6/x86_64/RPMS/mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm 
+# COPY mongodb-enterprise-server-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-4.2.6-1.el7.x86_64.rpm
+# COPY mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm
+# COPY mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm 
+# COPY mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm 
 
-COPY mongodb-enterprise-server-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-4.2.6-1.el7.x86_64.rpm
-COPY mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm
-COPY mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm 
-COPY mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm 
-
-# ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/4.2/x86_64/RPMS/mongodb-enterprise-server-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-4.2.6-1.el7.x86_64.rpm
-# ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/4.2/x86_64/RPMS/mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm
-# ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/4.2/x86_64/RPMS/mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm 
-# ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/4.2/x86_64/RPMS/mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm 
+ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/4.2/x86_64/RPMS/mongodb-enterprise-server-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-server-4.2.6-1.el7.x86_64.rpm
+ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/4.2/x86_64/RPMS/mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-mongos-4.2.6-1.el7.x86_64.rpm
+ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/4.2/x86_64/RPMS/mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm 
+ADD https://repo.mongodb.com/yum/redhat/7/mongodb-enterprise/4.2/x86_64/RPMS/mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm /opt/mongodb-enterprise-shell-4.2.6-1.el7.x86_64.rpm 
 
 COPY root /
 
