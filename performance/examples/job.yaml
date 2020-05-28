@@ -11,6 +11,8 @@ spec:
   parallelism: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
       containers:
       - image: localhost:32000/performance
         imagePullPolicy: Always
