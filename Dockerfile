@@ -47,7 +47,7 @@ RUN mkdir -p /mongodb_data && \
     chmod 755 /etc/init.d/disable-transparent-hugepages && \
     chkconfig --add disable-transparent-hugepages && \
     yum update -y && \
-    yum install -y gettext cyrus-sasl cyrus-sasl-gssapi cyrus-sasl-plain krb5-libs libcurl lm_sensors-libs net-snmp net-snmp-agent-libs openldap openssl && \
+    yum install -y gettext cyrus-sasl cyrus-sasl-gssapi cyrus-sasl-plain krb5-libs libcurl lm_sensors-libs net-snmp net-snmp-agent-libs openldap openssl dos2unix && \
     rpm -ivh /opt/mongodb-enterprise-server-3.6.10-1.el7.x86_64.rpm && \
     rpm -ivh /opt/mongodb-enterprise-shell-3.6.10-1.el7.x86_64.rpm && \
     rpm -ivh /opt/mongodb-enterprise-mongos-3.6.10-1.el7.x86_64.rpm && \
@@ -55,7 +55,9 @@ RUN mkdir -p /mongodb_data && \
     yum clean all && \
     chmod -R g+x /usr/bin/run_mongod && \
     chgrp -R 0 /etc/mongod.conf && \
-    chmod -R g+rwX /etc/mongod.conf
+    chmod -R g+rwX /etc/mongod.conf && \
+    dos2unix /usr/bin/container-entrypoint && \
+    dos2unix /usr/bin/run_mongod
 
 ENTRYPOINT ["container-entrypoint"]
 CMD ["run_mongod"]
