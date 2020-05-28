@@ -25,4 +25,6 @@ function setup_keyfile() {
 }
 
 # Attention: setup_keyfile may modify value of mongo_common_args!
-setup_keyfile
+if [ "${MONGODB_DEPLOYMENT}" = "replicaset" ]; then
+  setup_keyfile
+fi

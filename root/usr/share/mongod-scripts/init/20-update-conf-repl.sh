@@ -18,4 +18,6 @@ function update_replica_conf() {
 	info "updated the replication configuration"
 }
 
-update_replica_conf
+if [ "${MONGODB_DEPLOYMENT}" = "replicaset" ]; then
+  update_replica_conf
+fi

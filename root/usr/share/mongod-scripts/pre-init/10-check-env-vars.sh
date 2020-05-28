@@ -6,8 +6,6 @@ function check_env_vars() {
 
   [[ -v MONGODB_ADMIN_PASSWORD ]] || usage "MONGODB_ADMIN_PASSWORD has to be set."
 
-  [[ -v MONGODB_REPLICA_NAME ]] || usage "MONGODB_REPLICA_NAME has to be set."
-
   if [[ -v MONGODB_USER || -v MONGODB_PASSWORD || -v MONGODB_DATABASE  ]]; then
     [[ -v MONGODB_USER && -v MONGODB_PASSWORD && -v MONGODB_DATABASE  ]] || usage "You have to set all or none of variables: MONGODB_USER, MONGODB_PASSWORD, MONGODB_DATABASE"
 
@@ -17,8 +15,15 @@ function check_env_vars() {
     export CREATE_USER=1
   fi
 
-  if [[ ! -v MONGODB_REPLICA_NAME ]]; then
+  if [[ ! -v MONGODB_DEPLOYMENT ]]; then
+	 info "MONGODB_DEPLOYMENT not set, assuming Standalone"
+	 export MONGODB_DEPLOYMENT=standalone
+  fi
+  if [ "${MONGODB_DEPLOYMENT}" = "replicaset" ] && [ ! -v MONGODB_REPLICA_NAME ]; then
 	  usage "MONGODB_REPLICA_NAME not defined"
+  fi
+  if [ -v MONGODB_INITIATE_REPLICA ] && [ "${MONGODB_DEPLOYMENT}" = "standalone" ]; then
+	  usage "MONGODB_INITIATE_REPLICA cannot be used with standalone"
   fi
   if [[ -v MEMBER_ID ]]; then
     [[ -v MONGODB_KEYFILE_VALUE  ]] || usage "MONGODB_KEYFILE_VALUE have to be set"

@@ -19,9 +19,10 @@ Run using docker
 
 To run an instance you will need to pass the following parameters:
 
+MONGODB_DEPLOYMENT: standalone or replicaset
 MONGODB_ADMIN_PASSWORD: admin user password
 MONGODB_REPLICA_NAME: Name of the replicaset
-MONGODB_KEYFILE_VALUE: Value to be used in the key file
+MONGODB_KEYFILE_VALUE: Value to be used in the key file (Mandatory when using replicaset)
 
 optional parameters:
 MONGODB_MAX_CONNECTIONS: configures the --maxConns parameter
@@ -56,6 +57,8 @@ openssl can be installed in Windows, Linux, OSX, but if you prefer there are onl
 2. Create a yaml with the definition of the service, and example is provided in the folder examples, be sure to provide values to the following environment variables:
   
 ```
+- name: MONGODB_DEPLOYMENT
+  value: replicaset
 - name: MONGODB_ADMIN_PASSWORD
   value: mongodb123
 - name: MONGODB_REPLICA_NAME
