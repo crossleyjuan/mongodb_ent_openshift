@@ -57,7 +57,10 @@ spec:
             - name: MONGODB_DEPLOYMENT
               value: replicaset
             - name: MONGODB_ADMIN_PASSWORD
-              value: mongodb123
+              valueFrom:
+                  secretKeyRef:
+                      name: admin-pass-mongodb
+                      key: pass
             - name: MONGODB_REPLICA_NAME
               value: MainRepSet
             - name: MONGODB_KEYFILE_VALUE
@@ -66,9 +69,15 @@ spec:
                       name: keyfile-secret
                       key: internal-auth-mongodb-keyfile
             - name: MONGODB_USER
-              value: mongodb
+              valueFrom:
+                  secretKeyRef:
+                      name: user-mongodb
+                      key: user
             - name: MONGODB_PASSWORD
-              value: mongodb123
+              valueFrom:
+                  secretKeyRef:
+                      name: user-mongodb
+                      key: pass
             - name: MONGODB_DATABASE
               value: testperformance
             - name: MONGODB_SERVICE_NAME
