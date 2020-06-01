@@ -1,8 +1,5 @@
-##
-## For list of options visit:
-## https://docs.mongodb.org/manual/reference/configuration-options/
-##
-
+# pod configuration - do not remove this line, it's used to identify this file
+#
 # systemLog Options - How to do logging
 systemLog:
   # Runs the mongod in a quiet mode that attempts to limit the amount of output
@@ -34,8 +31,9 @@ systemLog:
    path: "${MONGODB_LOGPATH}/mongod.log"
    logAppend: true
 
-# security:
-#    authorization: enabled
+security:
+   authorization: enabled
+#   keyFile: ${MONGODB_KEYFILE_PATH}
 
 #replication:
 #   replSetName: ${MONGODB_REPLICA_NAME}

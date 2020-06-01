@@ -16,4 +16,3 @@ sed 's/___\(.*\)___/\$\1/g' -i ${TEMP_CONFIG}
 
 cp ${TEMP_CONFIG} ${MONGODB_CONFIG_PATH}
 
-mongo_common_args+=" -f ${MONGODB_CONFIG_PATH}"

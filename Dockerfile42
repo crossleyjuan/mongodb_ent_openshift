@@ -45,7 +45,6 @@ RUN mkdir -p /var/run/mongodb && \
     rpm -ivh /opt/mongodb-enterprise-tools-4.2.6-1.el7.x86_64.rpm && \
     yum clean all && \
     chmod -R a+x /usr/bin/run_mongod && \
-    chmod -R a+x /usr/bin/run_initd && \
     chgrp -R 0 /etc/mongod.conf && \
     chmod -R a+rwX /etc/mongod.conf
 

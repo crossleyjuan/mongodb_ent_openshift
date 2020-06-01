@@ -22,8 +22,12 @@ trap 'cleanup' SIGINT SIGTERM
 
 mongo_common_args=
 
-# pre init files - on first start
-process_extending_files ${CONTAINER_SCRIPTS_PATH}/pre-init
+if ! grep -q "^\s*#\s*pod configuration" ${MONGODB_CONFIG_PATH};
+then
+	process_extending_files ${CONTAINER_SCRIPTS_PATH}/pre-init
+fi
+
+mongo_common_args+=" -f ${MONGODB_CONFIG_PATH}"
 
 if [ ! -f "${MONGODB_DATADIR}/WiredTiger.lock" ];
 then
@@ -37,4 +41,4 @@ process_extending_files ${CONTAINER_SCRIPTS_PATH}/start
 unset MONGODB_USER MONGODB_PASSWORD MONGODB_DATABASE MONGODB_ADMIN_PASSWORD
 
 info "Starting mongod"
-exec mongod $mongo_common_args --auth
+exec mongod $mongo_common_args

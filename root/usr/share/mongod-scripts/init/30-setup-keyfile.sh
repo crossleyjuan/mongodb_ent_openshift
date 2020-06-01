@@ -4,7 +4,7 @@
 function setup_keyfile() {
   # If user specify keyFile in config file do not use generated keyFile
   if grep -q "^\s*keyFile" ${MONGODB_CONFIG_PATH}; then
-    exit 0
+    return 0
   fi
   if [ -z "${MONGODB_KEYFILE_VALUE-}" ]; then
     echo >&2 "ERROR: You have to provide the 'keyfile' value in MONGODB_KEYFILE_VALUE"
@@ -21,7 +21,13 @@ function setup_keyfile() {
 #  fi
   echo ${MONGODB_KEYFILE_VALUE} > ${MONGODB_KEYFILE_PATH}
   chmod 0600 ${MONGODB_KEYFILE_PATH}
-  mongo_common_args+=" --keyFile ${MONGODB_KEYFILE_PATH}"
+
+  TEMP_CONFIG=/tmp/mongod.conf
+  cp ${MONGODB_CONFIG_PATH} ${TEMP_CONFIG}
+
+  sed -e "s/#\([ ]*\)keyFile/\1keyFile/g" -e "s/#\([ ]*\)security/\1security/g" -e "s/#\([ ]*\)authorization/\1authorization/g" -i ${TEMP_CONFIG}
+  cat ${TEMP_CONFIG} > ${MONGODB_CONFIG_PATH}
+#  mongo_common_args+=" --keyFile ${MONGODB_KEYFILE_PATH}"
 }
 
 # Attention: setup_keyfile may modify value of mongo_common_args!
